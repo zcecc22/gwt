@@ -5,10 +5,10 @@ import (
 	"net/http"
 )
 
-func RouterNewServeMux() *http.ServeMux {
+func NewServeMux() *http.ServeMux {
 	return http.NewServeMux()
 }
 
-func RouterUseLoggingMiddleware(next http.Handler, logger *slog.Logger) http.Handler {
-	return MiddlewareRequestLogger(MiddlewareRecoverPanic(next, logger), logger)
+func UseLoggingMiddleware(next http.Handler, logger *slog.Logger) http.Handler {
+	return RequestLogger(RecoverPanic(next, logger), logger)
 }

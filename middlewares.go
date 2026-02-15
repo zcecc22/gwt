@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func MiddlewareRequestLogger(next http.Handler, logger *slog.Logger) http.Handler {
+func RequestLogger(next http.Handler, logger *slog.Logger) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		var (
 			ip     = r.RemoteAddr
@@ -19,13 +19,13 @@ func MiddlewareRequestLogger(next http.Handler, logger *slog.Logger) http.Handle
 	})
 }
 
-func MiddlewareRecoverPanic(next http.Handler, logger *slog.Logger) http.Handler {
+func RecoverPanic(next http.Handler, logger *slog.Logger) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		defer func() {
 			pv := recover()
 			if pv != nil {
 				w.Header().Set("Connection", "close")
-				HelperServerError(w, r, logger, fmt.Errorf("%v", pv))
+				RenderServerError(w, r, logger, fmt.Errorf("%v", pv))
 			}
 		}()
 		next.ServeHTTP(w, r)
